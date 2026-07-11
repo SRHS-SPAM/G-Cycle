@@ -1,10 +1,10 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { Keyboard, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { containerApi } from "@api/container";
-import { AppHeader } from "@components/common";
+import { AppHeader, DONE_ACCESSORY_ID, KeyboardDoneAccessory } from "@components/common";
 import { PrimaryButton } from "@components/buttons";
 import { useUiStore } from "@store/uiStore";
 import { colors, radius, spacing, typography } from "@theme/index";
@@ -23,6 +23,7 @@ export default function ContainerIssueScreen({ navigation }: Props) {
   const showToast = useUiStore((s) => s.showToast);
 
   const handleIssue = async () => {
+    Keyboard.dismiss();
     setLoading(true);
     try {
       await containerApi.issue(CURRENT_STORE_ID, Number(count) || 0);
@@ -35,19 +36,25 @@ export default function ContainerIssueScreen({ navigation }: Props) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <AppHeader onBack={() => navigation.goBack()} title="다회용기 발급/회수" />
-      <View style={styles.content}>
-        <Text style={styles.label}>발급할 용기 수량</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="number-pad"
-          value={count}
-          onChangeText={setCount}
-        />
-        <PrimaryButton label="발급하기" loading={loading} onPress={handleIssue} />
-      </View>
-    </SafeAreaView>
+    <Pressable style={styles.container} onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.container}>
+        <AppHeader onBack={() => navigation.goBack()} title="다회용기 발급/회수" />
+        <View style={styles.content}>
+          <Text style={styles.label}>발급할 용기 수량</Text>
+          <TextInput
+            style={styles.input}
+            keyboardType="number-pad"
+            returnKeyType="done"
+            inputAccessoryViewID={DONE_ACCESSORY_ID}
+            onSubmitEditing={Keyboard.dismiss}
+            value={count}
+            onChangeText={setCount}
+          />
+          <PrimaryButton label="발급하기" loading={loading} onPress={handleIssue} />
+        </View>
+      </SafeAreaView>
+      <KeyboardDoneAccessory />
+    </Pressable>
   );
 }
 

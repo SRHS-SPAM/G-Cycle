@@ -1,10 +1,10 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { useRef, useState } from "react";
+import { Keyboard, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { authApi } from "@api/auth";
-import { AppHeader } from "@components/common";
+import { AppHeader, DONE_ACCESSORY_ID, KeyboardDoneAccessory } from "@components/common";
 import { PrimaryButton } from "@components/buttons";
 import { useAuthStore } from "@store/authStore";
 import { useUiStore } from "@store/uiStore";
@@ -20,8 +20,10 @@ export default function LoginScreen({ navigation }: Props) {
   const [loading, setLoading] = useState(false);
   const loginAsMember = useAuthStore((s) => s.loginAsMember);
   const showToast = useUiStore((s) => s.showToast);
+  const passwordRef = useRef<TextInput>(null);
 
   const handleLogin = async () => {
+    Keyboard.dismiss();
     setLoading(true);
     try {
       const tokens = await authApi.login({ phoneNumber, password });
@@ -34,29 +36,39 @@ export default function LoginScreen({ navigation }: Props) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <AppHeader onBack={() => navigation.goBack()} title="로그인" />
-      <View style={styles.content}>
-        <TextInput
-          style={styles.input}
-          placeholder="전화번호"
-          keyboardType="phone-pad"
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="비밀번호"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-        />
-        <PrimaryButton label="로그인" loading={loading} onPress={handleLogin} />
-        <Pressable onPress={() => navigation.navigate("SignUp")}>
-          <Text style={styles.signUpLink}>아직 회원이 아니신가요? 회원가입</Text>
-        </Pressable>
-      </View>
-    </SafeAreaView>
+    <Pressable style={styles.container} onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.container}>
+        <AppHeader onBack={() => navigation.goBack()} title="로그인" />
+        <View style={styles.content}>
+          <TextInput
+            style={styles.input}
+            placeholder="전화번호"
+            keyboardType="phone-pad"
+            returnKeyType="next"
+            inputAccessoryViewID={DONE_ACCESSORY_ID}
+            onSubmitEditing={() => passwordRef.current?.focus()}
+            blurOnSubmit={false}
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
+          />
+          <TextInput
+            ref={passwordRef}
+            style={styles.input}
+            placeholder="비밀번호"
+            secureTextEntry
+            returnKeyType="done"
+            onSubmitEditing={handleLogin}
+            value={password}
+            onChangeText={setPassword}
+          />
+          <PrimaryButton label="로그인" loading={loading} onPress={handleLogin} />
+          <Pressable onPress={() => navigation.navigate("SignUp")}>
+            <Text style={styles.signUpLink}>아직 회원이 아니신가요? 회원가입</Text>
+          </Pressable>
+        </View>
+      </SafeAreaView>
+      <KeyboardDoneAccessory />
+    </Pressable>
   );
 }
 

@@ -1,8 +1,9 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { Keyboard, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { KeyboardDoneAccessory, DONE_ACCESSORY_ID } from "@components/common";
 import { PrimaryButton } from "@components/buttons";
 import { useCompleteTask } from "@hooks/queries/useRiderTasks";
 import { colors, radius, spacing, typography } from "@theme/index";
@@ -19,6 +20,7 @@ export default function PickupCompleteScreen({ route, navigation }: Props) {
   const [done, setDone] = useState(false);
 
   const handleComplete = async () => {
+    Keyboard.dismiss();
     await completeTask.mutateAsync({
       taskId,
       collectedCount: Number(collectedCount) || 0,
@@ -44,20 +46,26 @@ export default function PickupCompleteScreen({ route, navigation }: Props) {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>수거한 용기 수량을 입력하세요</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="number-pad"
-          value={collectedCount}
-          onChangeText={setCollectedCount}
-        />
-      </View>
-      <View style={styles.footer}>
-        <PrimaryButton label="수거 완료" loading={completeTask.isPending} onPress={handleComplete} />
-      </View>
-    </SafeAreaView>
+    <Pressable style={styles.container} onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.content}>
+          <Text style={styles.title}>수거한 용기 수량을 입력하세요</Text>
+          <TextInput
+            style={styles.input}
+            keyboardType="number-pad"
+            returnKeyType="done"
+            inputAccessoryViewID={DONE_ACCESSORY_ID}
+            onSubmitEditing={Keyboard.dismiss}
+            value={collectedCount}
+            onChangeText={setCollectedCount}
+          />
+        </View>
+        <View style={styles.footer}>
+          <PrimaryButton label="수거 완료" loading={completeTask.isPending} onPress={handleComplete} />
+        </View>
+      </SafeAreaView>
+      <KeyboardDoneAccessory />
+    </Pressable>
   );
 }
 
