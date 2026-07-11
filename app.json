@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "G-Cycle",
+    "slug": "g-cycle",
+    "scheme": "gcycle",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#0FA958"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "kr.gangnam.gcycle",
+      "config": {
+        "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "NSCameraUsageDescription": "QR 스캔으로 주문/반납을 진행하기 위해 카메라 접근이 필요합니다.",
+        "NSLocationWhenInUseUsageDescription": "가까운 매장과 수거함을 안내하기 위해 위치 정보가 필요합니다."
+      }
+    },
+    "android": {
+      "package": "kr.gangnam.gcycle",
+      "permissions": ["CAMERA", "ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"]
+    },
+    "plugins": ["expo-camera", "expo-location", "expo-secure-store"]
+  }
+}
