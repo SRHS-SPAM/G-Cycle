@@ -1,0 +1,9 @@
+# Development overrides: live reload + source mounted, no build required each time.
+# Usage: docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+services:
+  app:
+    volumes:
+      - ./app:/code/app
+      - ./alembic:/code/alembic
+    command: >
+      sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
