@@ -58,3 +58,13 @@ def logout(current_user: User = Depends(get_current_user)):
 @router.get("/me")
 def me(current_user: User = Depends(get_current_user)):
     return success_response(MeResponse.model_validate(current_user).model_dump(), message="ok")
+
+@router.post("/guest")
+def guest_session(payload: GuestOrderRequest, db: Session = Depends(get_db)):
+    service = AuthService(db)
+    # 🌟 폰번호 문자열 대신 payload 객체 통째로 전달하도록 수정
+    token = service.guest_session(payload)
+    return success_response(
+        GuestTokenResponse(access_token=token).model_dump(), 
+        message="guest identity verified and session created"
+    )

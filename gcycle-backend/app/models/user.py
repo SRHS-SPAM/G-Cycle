@@ -17,6 +17,11 @@ class User(Base, TimestampMixin):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_guest: Mapped[bool] = mapped_column(Boolean, default=False)
 
+    # 🌟 사후 패널티 강제를 위한 먹튀 방지 안전장치 필드 추가
+    is_identity_verified: Mapped[bool] = mapped_column(Boolean, default=False)
+    billing_key: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    penalty_policy_agreed: Mapped[bool] = mapped_column(Boolean, default=False)
+
     orders: Mapped[list["Order"]] = relationship(back_populates="user")  # noqa: F821
     rewards: Mapped[list["Reward"]] = relationship(back_populates="user")  # noqa: F821
     pickup_tasks: Mapped[list["PickupTask"]] = relationship(back_populates="rider")  # noqa: F821
