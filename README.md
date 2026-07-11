@@ -18,12 +18,12 @@ npm run typecheck
 
 ```
 src/
-├─ app/            # 내비게이션, 프로바이더, App.tsx
+├─ core/           # 내비게이션, 프로바이더, App.tsx (alias: @app) — "app" 이름은 Expo Router 자동 감지와 충돌해 core로 명명
 ├─ components/     # 공용 컴포넌트 (common/buttons/feedback/cards/map/qr)
 ├─ features/       # 화면 + 화면 전용 컴포넌트 (auth/home/store/order/return/rider/reward/mypage/storeOwner/admin)
 ├─ api/            # 도메인별 axios 래퍼
 ├─ store/          # zustand 전역 상태 (auth/ui/order/rider)
-├─ hooks/           # useLocation + React Query 훅 (hooks/queries)
+├─ hooks/          # useLocation + React Query 훅 (hooks/queries)
 ├─ types/          # UserRole, Store, Order, CollectionPoint, PickupTask, Reward, ApiResponse<T> 등
 ├─ theme/          # colors, typography, spacing
 └─ constants/      # API_BASE_URL, 강남 기본 좌표 등
